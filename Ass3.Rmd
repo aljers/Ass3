@@ -7,10 +7,11 @@ output: pdf_document
 ```{r}
 library(tidyverse)
 library(patchwork)
+library(lmtest)
 ```
 ## Q1
 ```{r}
-hw2_datadata_q1 <- read.csv('https://raw.githubusercontent.com/hgweon2/ss3859/master/hw2-data-2.csv')
+hw2_data_q1 <- read.csv('https://raw.githubusercontent.com/hgweon2/ss3859/master/hw2-data-2.csv')
 lm_q1 <- lm(y~x, data = hw2_data_q1)
 # par(mfrow = c(2,2))
 # plot(lm_q1)
@@ -18,24 +19,24 @@ plot(fitted(lm_q1), resid(lm_q1), col = "grey", pch = 20,
      xlab = "Fitted", ylab = "Residuals", main = "Residual plot")
 abline(h = 0, col = "darkorange", lwd = 2)
 ```
-To check the linearity, normality and equal variance assumptions. We made the residual plot. The orange horizontal line is the zero residual line. We observe a clear 
+To check the linearity, normality and equal variance assumptions. We made the residual plot. The orange horizontal line is the zero residual line. From residual plot, the mean of residual varies systematically, therefore the linearity assumption is violated. At the same time, the spread of residual is roughly same (constant), which means the variance of residuals is constant, hence the equal variance assumption holds. 
 ```{r}
 qqnorm(hw2_data_q1$y)  
 qqline(hw2_data_q1$y, col = "dodgerblue", lwd = 2)
 #hist(hw2_data$y,breaks=100,col="darkorange")
 ```
-
+To check the normality, we use QQ plot. In this case, the sample quantile has shorter tail in both side. The normality is violated since the sample quantile does not give a linear pattern. 
 
 
 ```{r}
 bptest(lm_q1)
 ```
-
+Making conclusion from residual plot to diagnostic equal variance assumption is an informal way. We then introduced Breusch-Pagan test for checking the equal variance assumption. It assumed variance for each residual is all constant in null hypothesis. The test statistic is $0.0090726$ with corresponding p-value $0.9241$. Given $\alpha=0.05$, we do not have enough evidence against the null hypothesis. The equal variance assumption holds. 
 
 ```{r}
 shapiro.test(resid(lm_q1))
 ```
-
+Aside from QQ plot, we also used a formal test for the normality: Shapiro-Wilk Normality Test. In null hypothesis, we assume all the residuals are from a normal distribution. The test statistic is $W=\frac{\sum {\left(a_i e_i\right)}^2}{\sum e_i^2}$ where $e_i$ is the $i$th smallest residual and $a_i$ is the coefficient for $e_i$. The test statistic gives $W=0.97905$ with corresponding $p\text{-}value=0.1121$. Given $\alpha=0.05<0.1121$, we do not have enough evidence against the null hypothesis. The normality assumption holds.
 ## Q2
 
 ```{r}
@@ -47,21 +48,22 @@ plot(fitted(lm_q2), resid(lm_q2), col = "grey", pch = 20,
      xlab = "Fitted", ylab = "Residuals", main = "Residual plot")
 abline(h = 0, col = "darkorange", lwd = 2)
 ```
+We repeated the steps in question 1. From this residual, we can see that residuals are allocated around zero, so the linearity assumption holds. Beside, residuals get more spread as the fitted value $\hat Y$ increases, it means the variance of residuals is not constant, and the equal variance assumption is violated. 
 ```{r}
 qqnorm(hw2_data_q2$y)  
 qqline(hw2_data_q2$y, col = "dodgerblue", lwd = 2)
 #hist(hw2_data$y,breaks=100,col="darkorange")
 ```
-
+Next, we checked the normal assumption by QQ plot. We can see a heavier right tail and shorter left tail, the distribution is skew to the right. It shows evidence against the normality assumption. According to the last part of question 1, we have to run a formal test to determine the significance of this evidence and make conclusion.
 ```{r}
 bptest(lm_q2)
 ```
-
+The BP test in this case returns a test statistic 22.542 with corresponding $p\text{-}value=2.056\times10^{-6}$. Given $\alpha = 0.05$, we have enough evidence against the null hypothesis. The equal variance assumption is violated.
 
 ```{r}
 shapiro.test(resid(lm_q2))
 ```
-
+The SW test in this case returns a test statistic $W=0.95913$ with corresponding $p\text{-}value=0.003487$. Given $\alpha = 0.05$, we have enough evidence against the null hypothesis. The normality assumption is violated.
 ## Q3
 ```{r}
 # (a)
