@@ -1,0 +1,84 @@
+---
+title: "Ass2"
+author: "Jiaxuan Lu"
+date: "2022-10-27"
+output: pdf_document
+---
+```{r}
+library(tidyverse)
+library(patchwork)
+```
+## Q1
+```{r}
+hw2_datadata_q1 <- read.csv('https://raw.githubusercontent.com/hgweon2/ss3859/master/hw2-data-2.csv')
+lm_q1 <- lm(y~x, data = hw2_data_q1)
+# par(mfrow = c(2,2))
+# plot(lm_q1)
+plot(fitted(lm_q1), resid(lm_q1), col = "grey", pch = 20,
+     xlab = "Fitted", ylab = "Residuals", main = "Residual plot")
+abline(h = 0, col = "darkorange", lwd = 2)
+```
+To check the linearity, normality and equal variance assumptions. We made the residual plot. The orange horizontal line is the zero residual line. We observe a clear 
+```{r}
+qqnorm(hw2_data_q1$y)  
+qqline(hw2_data_q1$y, col = "dodgerblue", lwd = 2)
+#hist(hw2_data$y,breaks=100,col="darkorange")
+```
+
+
+
+```{r}
+bptest(lm_q1)
+```
+
+
+```{r}
+shapiro.test(resid(lm_q1))
+```
+
+## Q2
+
+```{r}
+hw2_data_q2 <- read.csv('https://raw.githubusercontent.com/hgweon2/ss3859/master/hw2-data-3.csv')
+lm_q2 <- lm(y~x, data = hw2_data_q2)
+# par(mfrow = c(2,2))
+# plot(lm_q1)
+plot(fitted(lm_q2), resid(lm_q2), col = "grey", pch = 20,
+     xlab = "Fitted", ylab = "Residuals", main = "Residual plot")
+abline(h = 0, col = "darkorange", lwd = 2)
+```
+```{r}
+qqnorm(hw2_data_q2$y)  
+qqline(hw2_data_q2$y, col = "dodgerblue", lwd = 2)
+#hist(hw2_data$y,breaks=100,col="darkorange")
+```
+
+```{r}
+bptest(lm_q2)
+```
+
+
+```{r}
+shapiro.test(resid(lm_q2))
+```
+
+## Q3
+```{r}
+# (a)
+hw2_data_q3 <- read.csv('https://raw.githubusercontent.com/hgweon2/data/main/hw3-data.txt')
+pairs(~., data = hw2_data_q3)
+```
+
+```{r}
+lm_q3 <- lm(y~x1+x2, data = hw2_data_q3)
+# check by graphs 
+# residual plot
+plot(fitted(lm_q3), resid(lm_q3), col = "grey", pch = 20,
+     xlab = "Fitted", ylab = "Residuals", main = "Residual plot")
+abline(h = 0, col = "darkorange", lwd = 2)
+# QQ plot
+qqnorm(hw2_data_q3$y)  
+qqline(hw2_data_q3$y, col = "dodgerblue", lwd = 2)
+
+```
+
