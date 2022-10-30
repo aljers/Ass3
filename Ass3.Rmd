@@ -96,7 +96,50 @@ shapiro.test(resid(lm_q3))
 We use SW test for checking the normality assumption. We have test statistic $W=0.95915$ with corresponding $p\text{-}value=1.603\times 10^{-5}$. Given $\alpha=0.05$, $0.05 >1.603\times 10^{-5}$, we now have enough evidence against the null hypothesis. Therefore the normality assumption holds.
 ## (c)
 ```{r}
-n = length(x)
-t = 4/n
+# Obtains Cook's distances
+lm_q3_cd = cooks.distance(lm_q3)
+# We have 4 influential observations
+sum(lm_q3_cd > 4/length(lm_q3_cd))
+# ASSUME that those points are simple measurement errors
+# Eliminate the points from mtcars and store the rest into mtcars2
+inf_i = which(lm_q3_cd > 4/length(lm_q3_cd))
+print(inf_i)
+```
+An influential point is determined according to the Cook's Distance: $D_i=\frac{\sum^{n}_{j=1}\left(\hat Y_j-\hat Y_j^{-i}\right)^2}{p\cdot \hat\sigma^2}$, where $\hat Y_j^{-i}$ is the fitted value for the $j$th observation when $i$th observation was removed from the data. In this question, we set the threshold to be $\frac{4}{n}$, where n is the number of observations. By this rule, we say $i$th observation is influential if we have $D_i>\frac{4}{n}$. In summary, 14 points are detected as influential points. Their index are also printed above. 
+
+## (d)
+```{r}
+out_i = which(abs(rstandard(lm_q3)) > 2)
+intersect(inf_i, out_i)
+length(intersect(inf_i, out_i))
+```
+An outlier is a point that does not fit the model well. We detect it by standardized residuals:$r_i=\frac{e_i}{\hat\sigma\sqrt{1-h_{ii}}}$. Usually, we set 2 to be the threshold, the $i$th observation is an outlier if $\left|r_i\right|>2$. To search for the outliers from all the influential points is equivalent to find their intersection. In summary, 5 points from influential points are detected as outlier
+
+## (e)
+```{r}
+hw2_data_q3_new = hw2_data_q3[-inf_i,]
+# Fit mtcars2
+lm_q3_new = lm(y~x1+x2, data = hw2_data_q3_new)
+
+# Residual plot and normal qq plot
+par(mfrow=c(1,2))
+plot(fitted(lm_q3_new), resid(lm_q3_new), col = "grey", pch = 20,
+     xlab = "Fitted", ylab = "Residual",cex=2,
+     main = "Error removed: Fitted vs Res.")
+abline(h = 0, col = "darkorange", lwd = 2)
+qqnorm(resid(lm_q3_new), col = "grey",pch=20,cex=2)
+qqline(resid(lm_q3_new), col = "dodgerblue", lwd = 2)
+```
+Now, all the influential points are removed and we fitted a new model based on our new set of data. From residual plot, the quadratic 
+
+```{r}
+# bp test
+bptest(lm_q3_new)
+```
+
+
+```{r}
+# Shapiro test
+shapiro.test(resid(lm_q3_new))
 ```
 
