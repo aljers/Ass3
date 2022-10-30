@@ -65,12 +65,12 @@ shapiro.test(resid(lm_q2))
 ```
 The SW test in this case returns a test statistic $W=0.95913$ with corresponding $p\text{-}value=0.003487$. Given $\alpha = 0.05$, we have enough evidence against the null hypothesis. The normality assumption is violated.
 ## Q3
+## (a)
 ```{r}
-# (a)
 hw2_data_q3 <- read.csv('https://raw.githubusercontent.com/hgweon2/data/main/hw3-data.txt')
 pairs(~., data = hw2_data_q3)
 ```
-
+## (b)
 ```{r}
 lm_q3 <- lm(y~x1+x2, data = hw2_data_q3)
 # check by graphs 
@@ -78,9 +78,25 @@ lm_q3 <- lm(y~x1+x2, data = hw2_data_q3)
 plot(fitted(lm_q3), resid(lm_q3), col = "grey", pch = 20,
      xlab = "Fitted", ylab = "Residuals", main = "Residual plot")
 abline(h = 0, col = "darkorange", lwd = 2)
+```
+From this residual plot, we observe that residuals have a quadratic pattern with the extend of spread be th same for any fitted variance. In other word, given any fitted, the residual mean varies but the residual variances are the same. Hence, we conconclude that the assumption of equal variance holds while the linearity assumption is violated. 
+```{r}
 # QQ plot
 qqnorm(hw2_data_q3$y)  
 qqline(hw2_data_q3$y, col = "dodgerblue", lwd = 2)
-
+```
+This QQ plot shows that residual has shorter tail in both side than a (standard) normal distribution. This finding gives us evidence against the normality assumption. (normality assumption may not holds)
+```{r}
+bptest(lm_q3)
+```
+We carried BP test for checking the equal variance assumption. We have test statistic $0.094601$ with corresponding $p\text{-}value=0.9538$. Given $\alpha=0.05$, we do not have enough evidence against the null hypothesis. Therefore the equal variance assumption is violated.
+```{r}
+shapiro.test(resid(lm_q3))
+```
+We use SW test for checking the normality assumption. We have test statistic $W=0.95915$ with corresponding $p\text{-}value=1.603\times 10^{-5}$. Given $\alpha=0.05$, $0.05 >1.603\times 10^{-5}$, we now have enough evidence against the null hypothesis. Therefore the normality assumption holds.
+## (c)
+```{r}
+n = length(x)
+t = 4/n
 ```
 
